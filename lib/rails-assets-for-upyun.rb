@@ -7,7 +7,8 @@ class RailsAssetsForUpyun
       
       url = URI.encode "/#{bucket}#{bucket_path}#{file[localpath.to_s.size + 1 .. -1]}"
       date = Time.now.httpdate
-      size = RestClient.head("#{upyun_ap}#{url}", {\
+      _rujia_upyun = "http://m-homeinns-assets.b0.upaiyun.com"
+      size = RestClient.head("#{_rujia_upyun}#{url}", {\
           Authorization: "UpYun #{username}:#{signature 'HEAD', url, date, 0, password}", 
           Date: date}) do |response, request, result, &block|
         case response.code 
