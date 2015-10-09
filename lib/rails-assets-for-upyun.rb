@@ -3,19 +3,23 @@ require 'uri'
 class RailsAssetsForUpyun
   def self.publish(bucket, username, password, custom_host=nil, bucket_path="/", localpath='public', upyun_ap="http://v0.api.upyun.com")
     # http://stackoverflow.com/questions/357754/can-i-traverse-symlinked-directories-in-ruby-with-a-glob
-    _rujia_upyun = custom_host || upyun_ap
-    puts "head host: #{_rujia_upyun}"
+    _upyun_head_host = custom_host || upyun_ap
+    puts "head host: #{_upyun_head_host}"
     Dir[File.join localpath, "**{,/*/**}/*"].select{|f| File.file? f}.each do |file|
       
       url = URI.encode "/#{bucket}#{bucket_path}#{file[localpath.to_s.size + 1 .. -1]}"
       puts "encode url: #{url}"
       date = Time.now.httpdate
-      size = RestClient.head("#{_rujia_upyun}#{url}", {\
+      size = RestClient.head("#{_upyun_head_host}#{url}", {\
           Authorization: "UpYun #{username}:#{signature 'HEAD', url, date, 0, password}", 
           Date: date}) do |response, request, result, &block|
         case response.code 
         when 200
-          response.headers[:x_upyun_file_size].to_i
+          if custom_host.nil?
+            response.headers[:x_upyun_file_size].to_i
+          else
+            response.headers[:content_length].to_i
+          end
         when 404
           "non-exists"
         else
