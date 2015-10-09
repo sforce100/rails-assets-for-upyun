@@ -7,10 +7,11 @@ class RailsAssetsForUpyun
     puts "head host: #{_upyun_head_host}"
     Dir[File.join localpath, "**{,/*/**}/*"].select{|f| File.file? f}.each do |file|
       
-      url = URI.encode "/#{bucket if custom_host.nil?}#{bucket_path}#{file[localpath.to_s.size + 1 .. -1]}"
-      puts "encode url: #{url}"
+      head_url = URI.encode "#{"/#{bucket}" if custom_host.nil?}#{bucket_path}#{file[localpath.to_s.size + 1 .. -1]}"
+      url = URI.encode "/#{bucket}#{bucket_path}#{file[localpath.to_s.size + 1 .. -1]}"
+      puts "encode head_url: #{head_url}"
       date = Time.now.httpdate
-      size = RestClient.head("#{_upyun_head_host}#{url}", {\
+      size = RestClient.head("#{_upyun_head_host}#{head_url}", {\
           Authorization: "UpYun #{username}:#{signature 'HEAD', url, date, 0, password}", 
           Date: date}) do |response, request, result, &block|
         case response.code 
@@ -31,6 +32,7 @@ class RailsAssetsForUpyun
       else
         file_content = File.read(file)
         puts "uploading #{size} => #{file_size} #{file}.."
+        puts "uploading url: #{url}"
         RestClient.put("#{upyun_ap}#{url}",  file_content,{\
           Authorization: "UpYun #{username}:#{signature 'PUT', url, date, file_size, password}", 
           Date: date,
