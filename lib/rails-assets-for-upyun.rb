@@ -7,7 +7,7 @@ class RailsAssetsForUpyun
     puts "head host: #{_upyun_head_host}"
     Dir[File.join localpath, "**{,/*/**}/*"].select{|f| File.file? f}.each do |file|
       
-      url = URI.encode "/#{bucket}#{bucket_path}#{file[localpath.to_s.size + 1 .. -1]}"
+      url = URI.encode "/#{bucket if custom_host.nil?}#{bucket_path}#{file[localpath.to_s.size + 1 .. -1]}"
       puts "encode url: #{url}"
       date = Time.now.httpdate
       size = RestClient.head("#{_upyun_head_host}#{url}", {\
