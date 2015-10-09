@@ -28,7 +28,7 @@ class RailsAssetsForUpyun
           response.return!(request, result, &block)
         end
       end
-      # if size == (file_size = File.size file)
+      file_size = File.size file
       if size == 200 && !force_upload
         puts "skipping #{file}.."
       else
