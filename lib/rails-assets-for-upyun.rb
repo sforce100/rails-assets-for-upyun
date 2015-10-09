@@ -1,7 +1,7 @@
 require 'rest-client'
 require 'uri'
 class RailsAssetsForUpyun
-  def self.publish(bucket, username, password, custom_host=nil, bucket_path="/", localpath='public', upyun_ap="http://v0.api.upyun.com")
+  def self.publish(bucket, username, password, custom_host=nil, force_upload=false, bucket_path="/", localpath='public', upyun_ap="http://v0.api.upyun.com")
     # http://stackoverflow.com/questions/357754/can-i-traverse-symlinked-directories-in-ruby-with-a-glob
     _upyun_head_host = custom_host || upyun_ap
     puts "head host: #{_upyun_head_host}"
@@ -16,18 +16,20 @@ class RailsAssetsForUpyun
           Date: date}) do |response, request, result, &block|
         case response.code 
         when 200
-          if custom_host.nil?
-            response.headers[:x_upyun_file_size].to_i
-          else
-            response.headers[:content_length].to_i
-          end
+          # if custom_host.nil?
+          #   response.headers[:x_upyun_file_size].to_i
+          # else
+          #   response.headers[:content_length].to_i
+          # end
+          200
         when 404
           "non-exists"
         else
           response.return!(request, result, &block)
         end
       end
-      if size == (file_size = File.size file)
+      # if size == (file_size = File.size file)
+      if size == 200 && !force_upload
         puts "skipping #{file}.."
       else
         file_content = File.read(file)
