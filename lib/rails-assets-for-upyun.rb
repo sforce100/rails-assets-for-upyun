@@ -12,7 +12,7 @@ class RailsAssetsForUpyun
     end
     
     JSON.parse(File.read(manifest_paths[0]))['assets'].each do |file_name, file|
-      next unless File.file?(file)
+      # next unless File.file?(file)
     # Dir[File.join localpath, "**{,/*/**}/*"].select{|f| File.file? f}.each do |file|
       upload(file, bucket, username, password, bucket_path, localpath, upyun_ap)
     end
