@@ -1,7 +1,7 @@
 require 'rest-client'
 require 'uri'
 class RailsAssetsForUpyun
-  def self.publish(bucket, username, password, bucket_path="/", localpath='public', upyun_ap="http://v0.api.upyun.com")
+  def self.publish(bucket, username, password, custom_host=nil, force_upload=false, bucket_path="/", localpath='public', upyun_ap="http://v0.api.upyun.com")
     # http://stackoverflow.com/questions/357754/can-i-traverse-symlinked-directories-in-ruby-with-a-glob
     manifest_paths = Dir[File.join "public", "assets/manifest-*.json"]
     if manifest_paths.length > 1
