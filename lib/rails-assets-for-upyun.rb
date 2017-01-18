@@ -3,7 +3,7 @@ require 'uri'
 class RailsAssetsForUpyun
   def self.publish(bucket, username, password, bucket_path="/", localpath='public', upyun_ap="http://v0.api.upyun.com")
     # http://stackoverflow.com/questions/357754/can-i-traverse-symlinked-directories-in-ruby-with-a-glob
-    manifest_paths = Dir[File.join "public", "assets/manifest-*.json"]
+    manifest_paths = Dir[File.join "public", "assets/.sprockets-manifest-*.json"]
     if manifest_paths.length > 1
       puts "assets/manifest-*.json has multi version #{manifest_paths} \n get #{manifest_paths[0]}"
     elsif manifest_paths.length == 0
