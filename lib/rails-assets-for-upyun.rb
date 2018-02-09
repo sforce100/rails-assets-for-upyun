@@ -4,12 +4,19 @@ class RailsAssetsForUpyun
   def self.publish(bucket, username, password, bucket_path="/", localpath='public', upyun_ap="http://v0.api.upyun.com")
     assets_prefix_name = bucket_path[1..-1]
     # http://stackoverflow.com/questions/357754/can-i-traverse-symlinked-directories-in-ruby-with-a-glob
+    # sprocket2.x使用manifest-xxx.js , sprocket3.x使用.sprockets-manifest-xx.json
     manifest_paths = Dir[File.join "public", "#{assets_prefix_name}/.sprockets-manifest-*.json"]
     if manifest_paths.length > 1
-      puts "#{assets_prefix_name}/manifest-*.json has multi version #{manifest_paths} \n get #{manifest_paths[0]}"
+      puts "#{assets_prefix_name}/.sprockets-manifest-*.json has multi version #{manifest_paths} \n get #{manifest_paths[0]}"
     elsif manifest_paths.length == 0
-      puts "has not manifest-*.json file return"
-      return false
+      puts "has not .sprockets-manifest-*.json file return"
+      manifest_paths = Dir[File.join "public", "#{assets_prefix_name}/manifest-*.json"]
+      if manifest_paths.length > 1
+        puts "#{assets_prefix_name}/manifest-*.json has multi version #{manifest_paths} \n get #{manifest_paths[0]}"
+      elsif manifest_paths.length == 0
+        puts "has not manifest-*.json file return"
+        return false
+      end
     end
     
     JSON.parse(File.read(manifest_paths[0]))['assets'].each do |file_name, file|
