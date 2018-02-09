@@ -31,7 +31,7 @@ class RailsAssetsForUpyun
   end
 
   def self.upload(file, bucket, username, password, bucket_path="/", localpath='public', upyun_ap="http://v0.api.upyun.com")
-    url = URI.encode "/#{bucket}#{bucket_path}#{file[localpath.to_s.size + 1 .. -1]}"
+    url = URI.encode "/#{bucket}#{bucket_path}#{file[localpath.to_s.size + 7 .. -1]}"
     date = Time.now.httpdate
     size = RestClient.head("#{upyun_ap}#{url}", {\
         Authorization: "UpYun #{username}:#{signature 'HEAD', url, date, 0, password}", 
