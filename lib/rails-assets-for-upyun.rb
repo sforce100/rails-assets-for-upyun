@@ -18,7 +18,8 @@ class RailsAssetsForUpyun
         return false
       end
     end
-    
+      
+    # sprocket 编译文件
     JSON.parse(File.read(manifest_paths[0]))['assets'].each do |file_name, file|
       file = "#{localpath}/#{assets_prefix_name}/#{file}"
       unless File.file?(file)
@@ -34,7 +35,12 @@ class RailsAssetsForUpyun
       upload(file, bucket, username, password, assets_prefix_name, localpath, upyun_ap)
     end
 
+    # public 目录下文件
     Dir[File.join localpath, "*"].select{|f| File.file? f}.each do |file|
+      if file =~ /\.html$/
+        puts "skipping #{file} is a html file"
+        next
+      end
       upload(file, bucket, username, password, assets_prefix_name, localpath, upyun_ap)
     end
   end
