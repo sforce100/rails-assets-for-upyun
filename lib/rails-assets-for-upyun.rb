@@ -26,7 +26,7 @@ class RailsAssetsForUpyun
         next
       end
 
-      unless file =~ /\.html$/
+      if file =~ /\.html$/
         puts "skipping #{file} is a html file"
         next
       end
