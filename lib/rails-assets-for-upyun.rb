@@ -25,6 +25,11 @@ class RailsAssetsForUpyun
         puts "#{file} is not a file"
         next
       end
+
+      unless file =~ /\.html$/
+        puts "skipping #{file} is a html file"
+        next
+      end
     # Dir[File.join localpath, "**{,/*/**}/*"].select{|f| File.file? f}.each do |file|
       upload(file, bucket, username, password, assets_prefix_name, localpath, upyun_ap)
     end
