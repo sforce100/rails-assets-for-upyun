@@ -18,7 +18,7 @@ class RailsAssetsForUpyun
         return false
       end
     end
-      
+
     # sprocket 编译文件
     JSON.parse(File.read(manifest_paths[0]))['assets'].each do |file_name, file|
       file = "#{localpath}/#{assets_prefix_name}/#{file}"
@@ -55,15 +55,16 @@ class RailsAssetsForUpyun
     url = URI.encode "/#{bucket}/#{bucket_path}/#{file[start_path_num..-1]}"
     date = Time.now.httpdate
     size = RestClient.head("#{upyun_ap}#{url}", {\
-        Authorization: "UpYun #{username}:#{signature 'HEAD', url, date, 0, password}", 
+        Authorization: "UpYun #{username}:#{signature 'HEAD', url, date, 0, password}",
         Date: date}) do |response, request, result, &block|
-      case response.code 
+      case response.code
       when 200
         response.headers[:x_upyun_file_size].to_i
       when 404
         "non-exists"
       else
-        response.return!(request, result, &block)
+        puts response.inspect
+        response.return!(&block)
       end
     end
     if size == (file_size = File.size file)
@@ -72,7 +73,7 @@ class RailsAssetsForUpyun
       file_content = File.read(file)
       puts "uploading #{size} => #{file_size} #{file}.."
       RestClient.put("#{upyun_ap}#{url}",  file_content,{\
-        Authorization: "UpYun #{username}:#{signature 'PUT', url, date, file_size, password}", 
+        Authorization: "UpYun #{username}:#{signature 'PUT', url, date, file_size, password}",
         Date: date,
         mkdir: 'true',
         Content_MD5: Digest::MD5.hexdigest(file_content),
