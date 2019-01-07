@@ -63,8 +63,9 @@ class RailsAssetsForUpyun
       when 404
         "non-exists"
       else
+        puts request.inspect
         puts response.inspect
-        response.return!(&block)
+        # response.return!(&block)
       end
     end
     if size == (file_size = File.size file)
