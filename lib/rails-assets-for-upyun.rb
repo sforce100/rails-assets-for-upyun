@@ -81,7 +81,7 @@ class RailsAssetsForUpyun
           Content_MD5: Digest::MD5.hexdigest(file_content),
           })
       end
-    rescue e
+    rescue Exception => e
       puts "ERROR: #{e.class} #{e.message}"
     end
   end
